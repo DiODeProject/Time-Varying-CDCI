@@ -1,0 +1,148 @@
+<?xml version="1.0" ?>
+<argos-configuration>
+
+    <!-- ************************* -->
+    <!-- * General configuration * -->
+    <!-- ************************* -->
+    <framework>
+        <system threads="8" />
+        <experiment length="18000"
+            ticks_per_second="10"
+            random_seed="randomseed" />
+        </framework>
+        
+        <!-- *************** -->
+        <!-- * Controllers * -->
+        <!-- *************** -->
+        <controllers>
+
+            <kilobot_controller id="kbc">
+
+                <actuators>
+                    <differential_steering implementation="default"
+                        bias_avg="0.000015"
+                        bias_stddev="0.00186"/>
+                        <kilobot_communication implementation="default" />
+                        <kilobot_led implementation="default" />
+                    </actuators>
+
+                    <sensors>
+                        <kilobot_communication implementation="default" medium="kilocomm" show_rays="false" />
+                    </sensors>
+
+                    <params behavior="behaviourpath" />
+
+                </kilobot_controller>
+
+            </controllers>
+
+            <!-- ****************** -->
+            <!-- * Loop functions * -->
+            <!-- ****************** -->
+            <loop_functions 
+                library="expfolder/build/loop_functions/libark_loop_functions"
+                label="ark_loop_functions">
+
+<!--         <circular_arena
+            number_walls="100"
+            radius="1">
+        </circular_arena> -->
+        
+        <tracking
+            position="true"
+            orientation="false"
+            color="true">
+        </tracking>
+
+        
+        <variables
+            datafilename="data_file"
+            dynamic_virtual_environment="false"
+            frequency="datafrequency"
+            ohcfrequency="ohc_frequency"
+            quorum="quorumvalue"
+            timeforonemessage="arkmessagetime"
+            gps_cells="numberofgpscells"
+            quality_variance="qltvar"
+            tau0="TAU0"
+            >
+        </variables>
+        
+        <environments type="automatic"
+            numberofoptions="numoptions" polygonradius="polyrad" bestquality="bstquality" kappa="kppa" optionsradius="oprad" angularoffset="true">
+        </environments>
+
+    </loop_functions>
+
+
+    <!-- *********************** -->
+    <!-- * Arena configuration * -->
+    <!-- *********************** -->
+    <arena size="2, 2, 1" center="1,1,0.5">
+        <box id="wall_north" size="2,0.01,0.1" movable="false">
+          <body position="1,2,0" orientation="0,0,0" />
+      </box>
+      <box id="wall_south" size="2,0.01,0.1" movable="false">
+        <body position="1,0,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_east" size="0.01,2,0.1"  movable="false">
+        <body position="2,1,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_west" size="0.01,2,0.1"  movable="false">
+        <body position="0,1,0" orientation="0,0,0" />
+    </box>
+    
+    
+
+    <distribute>
+        <position method="uniform" min="0.1,0.1,0" max="1.9,1.9,0" />
+        <orientation method="uniform" min="0,0,0" max="360,0,0" />
+        <entity quantity="num_robots" max_trials="100">
+            <kilobot id="kb" communication_range="commrng">
+                <controller config="kbc"/>
+                <dynamics2d friction="0.7" />
+            </kilobot>
+        </entity>
+    </distribute>
+
+<!--     <kilobot id="kb0">
+        <body position="1.5,1,0" orientation="-108,0,0" />
+        <controller config="kbc" />
+        <dynamics2d friction="0.7"/>
+    </kilobot>
+-->
+<floor id="floor"
+    source="loop_functions"
+    pixels_per_meter="1000" 
+    /> 
+
+
+</arena>
+
+<!-- ******************* -->
+<!-- * Physics engines * -->
+<!-- ******************* -->
+<physics_engines>
+    <dynamics2d id="dyn2d" />
+</physics_engines>
+
+<!-- ********* -->
+<!-- * Media * -->
+<!-- ********* -->
+
+<media>
+    <kilobot_communication id="kilocomm" />
+</media>
+
+<!-- ****************** -->
+<!-- * Visualization  * -->
+<!-- ****************** -->
+<visualization>
+    <qt-opengl>
+        <camera>
+            <placement idx="0" position="1,0,2" look_at="1,1,0" lens_focal_length="20" />
+        </camera>
+    </qt-opengl>
+</visualization> 
+
+</argos-configuration>
